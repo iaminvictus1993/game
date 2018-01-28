@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px black solid
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="id-canvas" width="400" height="300"></canvas>
+</body>
+<script>
+    var log = console.log.bind(console)
+    var imageFromPath = function (path) {
+        var img = new Image()
+        img.src = path
+        return img
+    }
+    var Paddle = function () {
+        var image = imageFromPath('panel.jpg')
+        this.image = image
+        this.x = 0
+        this.y = 50
+        this.speed = 5
+    }
+    Paddle.prototype.moveLeft = function () {
+        this.x -= this.speed
+    }
+    Paddle.prototype.moveRight = function () {
+        this.x += this.speed
+    }
+    // 函数入口
+    var __main = function () {
+        var paddle = new Paddle()
+        var canvas = document.querySelector('#id-canvas')
+        var context = canvas.getContext('2d')
+        var leftDown = false
+        var rightDown = false
+
+        // events
+        window.addEventListener('keydown', keydownEvent)
+        window.addEventListener('keyup', keyupEvent)
+
+        function keyupEvent(event) {
+            var key = event.key
+            if (key === 'a') {
+                leftDown = false
+            } else if (key === 'd') {
+                rightDown = false
+            }
+        }
+        function keydownEvent(event) {
+            var key = event.key
+            if (key === 'a') {
+                leftDown = true
+            } else if (key === 'd') {
+                rightDown = true
+            }
+        }
+
+        setInterval(function () {
+            // update x
+            if (leftDown) {
+                paddle.moveLeft()
+            } else if (rightDown) {
+                paddle.moveRight()
+            }
+            // draw
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.drawImage(paddle.image, paddle.x, paddle.y)
+        }, 1000 / 30)
+    }
+    __main()
+</script>
+
+</html>
